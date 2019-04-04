@@ -8,6 +8,7 @@ baseurl = 'https://cloud.redhat.com'
 cookies = { 'x-rh-insights-alpha': 'flipmodesquadisthegreatest' }
 
 data = [
+
     # dashboard
     DotDict({ 'url': '/rhel/dashboard/', 'app': 'dashboard' }),
     DotDict({ 'url': '/rhel/dashboard',  'app': 'dashboard' }),
@@ -55,19 +56,27 @@ def do_urls(env):
 
 _orig_create_connection = connection.create_connection
 
-def patched_create_connection(address, *args, **kwargs):
+def stage_create_connection(address, *args, **kwargs):
     host, port = address
     ip = '23.201.3.166'
     return _orig_create_connection((ip, port), *args, **kwargs)
 
+def prod_create_connection(address, *args, **kwargs):
+    host, port = address
+    ip = '104.68.244.28'
+    return _orig_create_connection((ip, port), *args, **kwargs)
+
 def test_stage_urls_prod():
-    connection.create_connection = patched_create_connection
+    connection.create_connection = stage_create_connection
     do_urls('prod')
     connection.create_connection = _orig_create_connection
 
 def test_urls_prod():
+    connection.create_connection = prod_create_connection
     do_urls('stage')
+    connection.create_connection = _orig_create_connection
 
 def test_hashes():
     for key, val in output_data.items():
+        print(val.prod + ' ' + val.stage + ' ' + key)
         assert val.prod == val.stage, "md5sum mismatch for page at https://cloud.redhat.com{}".format(key)
