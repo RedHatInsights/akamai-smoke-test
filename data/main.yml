@@ -1,24 +1,3 @@
-
-# # dashboard
-# DotDict({ 'url': '/rhel/dashboard/', 'app': 'dashboard' }),
-# DotDict({ 'url': '/rhel/dashboard',  'app': 'dashboard' }),
-
-# DotDict({ 'url': '/rhel/inventory/7d5b12fd-a45f-48c6-8921-5da2423b6be8/vulnerabilities', 'app': 'inventory' }),
-# DotDict({ 'url': '/rhel/inventory', 'app': 'inventory' }),
-
-
-# DotDict({ 'url': '/insights/inventory/7d5b12fd-a45f-48c6-8921-5da2423b6be8/vulnerabilities', 'app': 'inventory' }),
-# DotDict({ 'url': '/insights/inventory', 'app': 'inventory' }),
-
-# DotDict({ 'url': '/insights/rules/', 'app': 'insights' }),
-# DotDict({ 'url': '/insights/rules', 'app': 'insights' }),
-# DotDict({ 'url': '/insights/actions/', 'app': 'insights' }),
-# DotDict({ 'url': '/insights/actions', 'app': 'insights' }),
-# DotDict({ 'url': '/insights/', 'app': 'insights' }),
-# DotDict({ 'url': '/insights/', 'app': 'insights' }),
-
-# DotDict({ 'url': '/', 'app': 'landing' })
-
 landing:
   - /
 
@@ -27,3 +6,37 @@ insights:
   - /insights/
   - /insights/actions
   - /insights/actions/
+  - /insights/rules
+  - /insights/rules/
+
+remediations:
+  - /insights/remediations
+  - /insights/remediations/
+  - /insights/remediations/32e6f471-e554-4c0b-8675-88381a02c7b2
+  - /rhel/remediations
+  - /rhel/remediations/
+  - /rhel/remediations/32e6f471-e554-4c0b-8675-88381a02c7b2
+
+inventory:
+  - /insights/inventory
+  - /insights/inventory/
+  - /insights/inventory/7d5b12fd-a45f-48c6-8921-5da2423b6be8/vulnerabilities
+  - /rhel/inventory
+  - /rhel/inventory/
+  - /rhel/inventory/7d5b12fd-a45f-48c6-8921-5da2423b6be8/vulnerabilities
+
+vulnerability:
+  - /rhel/vulnerability/cves
+  - /rhel/vulnerability/systems
+
+compliance:
+  - /compliance/policies
+  - /compliance/systems
+  - /compliance/imagestreams
+
+drift:
+  - /rhel/drift
+
+dashboard:
+  - /dashboard
+  - /dashboard/
