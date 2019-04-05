@@ -1,0 +1,29 @@
+
+# # dashboard
+# DotDict({ 'url': '/rhel/dashboard/', 'app': 'dashboard' }),
+# DotDict({ 'url': '/rhel/dashboard',  'app': 'dashboard' }),
+
+# DotDict({ 'url': '/rhel/inventory/7d5b12fd-a45f-48c6-8921-5da2423b6be8/vulnerabilities', 'app': 'inventory' }),
+# DotDict({ 'url': '/rhel/inventory', 'app': 'inventory' }),
+
+
+# DotDict({ 'url': '/insights/inventory/7d5b12fd-a45f-48c6-8921-5da2423b6be8/vulnerabilities', 'app': 'inventory' }),
+# DotDict({ 'url': '/insights/inventory', 'app': 'inventory' }),
+
+# DotDict({ 'url': '/insights/rules/', 'app': 'insights' }),
+# DotDict({ 'url': '/insights/rules', 'app': 'insights' }),
+# DotDict({ 'url': '/insights/actions/', 'app': 'insights' }),
+# DotDict({ 'url': '/insights/actions', 'app': 'insights' }),
+# DotDict({ 'url': '/insights/', 'app': 'insights' }),
+# DotDict({ 'url': '/insights/', 'app': 'insights' }),
+
+# DotDict({ 'url': '/', 'app': 'landing' })
+
+landing:
+  - /
+
+insights:
+  - /insights
+  - /insights/
+  - /insights/actions
+  - /insights/actions/
