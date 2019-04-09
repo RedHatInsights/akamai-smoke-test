@@ -52,6 +52,9 @@ def do_urls(env, data_element, release = 'stable'):
 
 
 DATA = Utils.getData(path = pytest.config.getoption('data'))
+print(DATA)
+asdf()
+
 APP = pytest.config.getoption('app')
 if APP:
     assert APP in DATA, 'invalid app... you asked for {}'.format(APP)
