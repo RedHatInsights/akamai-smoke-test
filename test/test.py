@@ -23,15 +23,20 @@ def do_urls(env, data_element, release = 'stable'):
     for path in data_val:
         url = getUrl(path, release)
         r = requests.get(url, cookies=cookies)
+
+        assert r.status_code == 200, 'Expected status code of GET {} to be 200 got {}'.format(url, r.status_code)
+
+        found = False
+
         tree = html.fromstring(r.content)
         for thing in tree.xpath('//script[@type="text/javascript"]'):
+
             if 'src' in thing.attrib:
                 src = thing.attrib['src']
                 if 'App.js' in src:
                     expected = '/apps/' + data_key
                     assert expected in src, "unexpected app id at {}\n{}\n{}".format(url, r.text, r.headers)
 
-                    print(r)
                     if env == 'stage':
                         assert 'X-Akamai-Staging' in r.headers, 'expected to see staging header in {}\n{}'.format(r.headers, url)
                     else:
@@ -40,6 +45,10 @@ def do_urls(env, data_element, release = 'stable'):
                     if path not in output_data:
                         output_data[path] = DotDict({ 'url': url })
                     output_data[path][env + '_hash'] = hashlib.md5(r.text.encode('utf-8')).hexdigest()
+                    found = True
+
+        # if the HTML did not contain a valid JS src!
+        assert found, 'did not find a valid app js reference in HTML on GET {}\n{}'.format(url, r.text)
 
 DATA = Utils.getData()
 PROD_IP  = '104.112.254.145'
