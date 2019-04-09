@@ -9,7 +9,6 @@ from lxml import html
 from utils import Utils
 from decorators import modify_ip
 
-baseurl = 'https://cloud.redhat.com'
 headers = {
     'Cookie': 'x-rh-insights-alpha=flipmodesquadisthegreatest',
     'Pragma': 'akamai-x-get-extracted-values'
@@ -17,14 +16,9 @@ headers = {
 
 output_data = {}
 
-def getUrl(path, release='stable'):
-    if release == 'beta':
-        return baseurl + '/beta' + path
-    return baseurl + path
-
 def do_urls(env, data_element, release = 'stable'):
     appname, path = data_element
-    url = getUrl(path, release)
+    url = Utils.getUrl(path, release)
     r = requests.get(url, headers=headers)
 
     assert r.status_code == 200, 'Expected status code of GET {} to be 200 got {}'.format(url, r.status_code)
@@ -43,6 +37,12 @@ def do_urls(env, data_element, release = 'stable'):
                     assert 'X-Akamai-Staging' in r.headers, 'expected to see staging header in {}\n{}'.format(r.headers, url)
                 else:
                     assert 'X-Akamai-Staging' not in r.headers, 'expected to not see staging header in {}\n{}'.format(r.headers, url)
+
+                assert 'X-Akamai-Session-Info' in r.headers
+
+                AKA_PM_FWD_URL = Utils.extractNamedInfoHeaderValue(r.headers['X-Akamai-Session-Info'], 'AKA_PM_FWD_URL')
+                net_storage_path = Utils.getNetStoragePath(appname, release)
+                assert AKA_PM_FWD_URL == net_storage_path, 'expected AKA_PM_FWD_URL ({}) to match the netstorage path ({}) for the GET {}'.format(AKA_PM_FWD_URL, net_storage_path, url)
 
                 if path not in output_data:
                     output_data[path] = DotDict({ 'url': url })
@@ -63,7 +63,7 @@ if APP:
 
 PROD_IP  = '104.112.254.145'
 STAGE_IP = '23.201.3.166'
-UHC_ON_CLOUD_URLS = [ getUrl('/'), getUrl('/clusters/') ]
+UHC_ON_CLOUD_URLS = [ Utils.getUrl('/'), Utils.getUrl('/clusters/') ]
 
 @pytest.mark.prod
 @pytest.mark.parametrize('data_element', UHC_ON_CLOUD_URLS)
