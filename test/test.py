@@ -30,6 +30,12 @@ def do_urls(env, data_element, release = 'stable'):
                 if 'App.js' in src:
                     expected = '/apps/' + data_key
                     assert expected in src, "unexpected app id at {}\n{}\n{}".format(url, r.text, r.headers)
+
+                    if env == 'stage':
+                        assert 'X-Akamai-Staging' in r.headers, 'expected to see staging header in {}'.format(r.headers)
+                    else:
+                        assert 'X-Akamai-Staging' not in r.headers, 'expected to not see staging header in {}'.format(r.headers)
+
                     if path not in output_data:
                         output_data[path] = DotDict({ 'url': url })
                     output_data[path][env + '_hash'] = hashlib.md5(r.text.encode('utf-8')).hexdigest()
@@ -37,23 +43,23 @@ def do_urls(env, data_element, release = 'stable'):
 DATA = Utils.getData()
 
 @pytest.mark.parametrize('data_element', DATA.items(), ids=list(DATA.keys()))
-@modify_ip('cloud.redhat.com')
+@modify_ip('104.112.254.145')
 def test_urls_prod_stable(data_element):
     do_urls('prod', data_element, release = 'beta')
 
 @pytest.mark.parametrize('data_element', DATA.items(), ids=list(DATA.keys()))
-@modify_ip('cloud.redhat.com')
+@modify_ip('104.112.254.145')
 def test_urls_prod_beta(data_element):
     do_urls('prod', data_element, release = 'beta')
 
 @pytest.mark.parametrize('data_element', DATA.items(), ids=list(DATA.keys()))
-@modify_ip('e1890.b.akamaiedge-staging.net')
-def test_urls_stage(data_element):
+@modify_ip('23.201.3.166')
+def test_urls_stage_stable(data_element):
     do_urls('stage', data_element)
 
 @pytest.mark.parametrize('data_element', DATA.items(), ids=list((s + '-beta' for s in DATA.keys())))
-@modify_ip('e1890.b.akamaiedge-staging.net')
-def test_urls_stage(data_element):
+@modify_ip('23.201.3.166')
+def test_urls_stage_beta(data_element):
     do_urls('stage', data_element, release = 'beta')
 
 # cannot use this in parallel without something like
