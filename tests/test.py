@@ -81,7 +81,6 @@ def test_urls_prod_stable(data_element):
 def test_urls_prod_beta(data_element):
     do_urls('prod', data_element, release = 'beta')
 
-# STAGE
 @pytest.mark.stage
 @pytest.mark.parametrize('data_element', UHC_ON_CLOUD_URLS)
 @modify_ip(STAGE_IP)
