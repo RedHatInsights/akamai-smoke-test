@@ -2,6 +2,7 @@ import pytest
 import requests
 import hashlib
 import time
+import itertools
 
 from dotdict import DotDict
 from lxml import html
@@ -19,41 +20,37 @@ def getUrl(path, release='stable'):
     return baseurl + path
 
 def do_urls(env, data_element, release = 'stable'):
-    data_key, data_val = data_element
-    for path in data_val:
-        url = getUrl(path, release)
-        r = requests.get(url, cookies=cookies)
+    appname, path = data_element
+    url = getUrl(path, release)
+    r = requests.get(url, cookies=cookies)
 
-        assert r.status_code == 200, 'Expected status code of GET {} to be 200 got {}'.format(url, r.status_code)
+    assert r.status_code == 200, 'Expected status code of GET {} to be 200 got {}'.format(url, r.status_code)
 
-        found = False
+    found = False
+    tree = html.fromstring(r.content)
+    for thing in tree.xpath('//script[@type="text/javascript"]'):
 
-        tree = html.fromstring(r.content)
-        for thing in tree.xpath('//script[@type="text/javascript"]'):
+        if 'src' in thing.attrib:
+            src = thing.attrib['src']
+            if 'App.js' in src:
+                expected = '/apps/' + appname
+                assert expected in src, "unexpected app id at {}\n{}\n{}".format(url, r.text, r.headers)
 
-            if 'src' in thing.attrib:
-                src = thing.attrib['src']
-                if 'App.js' in src:
-                    expected = '/apps/' + data_key
-                    assert expected in src, "unexpected app id at {}\n{}\n{}".format(url, r.text, r.headers)
+                if env == 'stage':
+                    assert 'X-Akamai-Staging' in r.headers, 'expected to see staging header in {}\n{}'.format(r.headers, url)
+                else:
+                    assert 'X-Akamai-Staging' not in r.headers, 'expected to not see staging header in {}\n{}'.format(r.headers, url)
 
-                    if env == 'stage':
-                        assert 'X-Akamai-Staging' in r.headers, 'expected to see staging header in {}\n{}'.format(r.headers, url)
-                    else:
-                        assert 'X-Akamai-Staging' not in r.headers, 'expected to not see staging header in {}\n{}'.format(r.headers, url)
+                if path not in output_data:
+                    output_data[path] = DotDict({ 'url': url })
+                output_data[path][env + '_hash'] = hashlib.md5(r.text.encode('utf-8')).hexdigest()
+                found = True
 
-                    if path not in output_data:
-                        output_data[path] = DotDict({ 'url': url })
-                    output_data[path][env + '_hash'] = hashlib.md5(r.text.encode('utf-8')).hexdigest()
-                    found = True
-
-        # if the HTML did not contain a valid JS src!
-        assert found, 'did not find a valid app js reference in HTML on GET {}\n{}'.format(url, r.text)
+    # if the HTML did not contain a valid JS src!
+    assert found, 'did not find a valid app js reference in HTML on GET {}\n{}'.format(url, r.text)
 
 
-DATA = Utils.getData(path = pytest.config.getoption('data'))
-print(DATA)
-asdf()
+DATA = Utils.getFlatData(path = pytest.config.getoption('data'))
 
 APP = pytest.config.getoption('app')
 if APP:
@@ -73,13 +70,13 @@ def test_uhc_unchromed_still_works_prod(data_element):
     assert ' src="/clusters/bundle.main.js' in r.text
 
 @pytest.mark.prod
-@pytest.mark.parametrize('data_element', DATA.items(), ids=list(DATA.keys()))
+@pytest.mark.parametrize('data_element', DATA, ids=list((d[1] for d in DATA)))
 @modify_ip(PROD_IP)
 def test_urls_prod_stable(data_element):
     do_urls('prod', data_element, release = 'beta')
 
 @pytest.mark.prod
-@pytest.mark.parametrize('data_element', DATA.items(), ids=list((s + '-beta' for s in DATA.keys())))
+@pytest.mark.parametrize('data_element', DATA, ids=list(('/beta' + d[1] for d in DATA)))
 @modify_ip(PROD_IP)
 def test_urls_prod_beta(data_element):
     do_urls('prod', data_element, release = 'beta')
@@ -93,13 +90,13 @@ def test_uhc_unchromed_still_works_stage(data_element):
     assert ' src="/clusters/bundle.main.js' in r.text
 
 @pytest.mark.stage
-@pytest.mark.parametrize('data_element', DATA.items(), ids=list(DATA.keys()))
+@pytest.mark.parametrize('data_element', DATA, ids=list((d[1] for d in DATA)))
 @modify_ip(STAGE_IP)
 def test_urls_stage_stable(data_element):
     do_urls('stage', data_element)
 
 @pytest.mark.stage
-@pytest.mark.parametrize('data_element', DATA.items(), ids=list((s + '-beta' for s in DATA.keys())))
+@pytest.mark.parametrize('data_element', DATA, ids=list(('/beta' + d[1] for d in DATA)))
 @modify_ip(STAGE_IP)
 def test_urls_stage_beta(data_element):
     do_urls('stage', data_element, release = 'beta')
