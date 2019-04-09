@@ -47,7 +47,7 @@ DATA = Utils.getData()
 def test_urls_prod_stable(data_element):
     do_urls('prod', data_element, release = 'beta')
 
-@pytest.mark.parametrize('data_element', DATA.items(), ids=list(DATA.keys()))
+@pytest.mark.parametrize('data_element', DATA.items(), ids=list((s + '-beta' for s in DATA.keys())))
 @modify_ip('104.112.254.145')
 def test_urls_prod_beta(data_element):
     do_urls('prod', data_element, release = 'beta')
