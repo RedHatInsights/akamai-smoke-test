@@ -63,6 +63,6 @@ sources:
 approvals:
   - /hybrid/catalog/approvals
 
-# openshift:
-#   - /openshift
-#   - /openshift/clusters
+openshift:
+  - /openshift
+  - /openshift/clusters

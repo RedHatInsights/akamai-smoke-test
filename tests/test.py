@@ -50,14 +50,12 @@ def do_urls(env, data_element, release = 'stable'):
         # if the HTML did not contain a valid JS src!
         assert found, 'did not find a valid app js reference in HTML on GET {}\n{}'.format(url, r.text)
 
-
-
 DATA = Utils.getData()
 PROD_IP  = '104.112.254.145'
 STAGE_IP = '23.201.3.166'
 UHC_ON_CLOUD_URLS = [ getUrl('/'), getUrl('/clusters/') ]
 
-# PROD
+@pytest.mark.prod
 @pytest.mark.parametrize('data_element', UHC_ON_CLOUD_URLS)
 @modify_ip(PROD_IP)
 def test_uhc_unchromed_still_works_prod(data_element):
@@ -65,17 +63,20 @@ def test_uhc_unchromed_still_works_prod(data_element):
     assert '<title>OpenShift Unified Hybrid Cloud</title>' in r.text
     assert ' src="/clusters/bundle.main.js' in r.text
 
+@pytest.mark.prod
 @pytest.mark.parametrize('data_element', DATA.items(), ids=list(DATA.keys()))
 @modify_ip(PROD_IP)
 def test_urls_prod_stable(data_element):
     do_urls('prod', data_element, release = 'beta')
 
+@pytest.mark.prod
 @pytest.mark.parametrize('data_element', DATA.items(), ids=list((s + '-beta' for s in DATA.keys())))
 @modify_ip(PROD_IP)
 def test_urls_prod_beta(data_element):
     do_urls('prod', data_element, release = 'beta')
 
 # STAGE
+@pytest.mark.stage
 @pytest.mark.parametrize('data_element', UHC_ON_CLOUD_URLS)
 @modify_ip(STAGE_IP)
 def test_uhc_unchromed_still_works_stage(data_element):
@@ -83,11 +84,13 @@ def test_uhc_unchromed_still_works_stage(data_element):
     assert '<title>OpenShift Unified Hybrid Cloud</title>' in r.text
     assert ' src="/clusters/bundle.main.js' in r.text
 
+@pytest.mark.stage
 @pytest.mark.parametrize('data_element', DATA.items(), ids=list(DATA.keys()))
 @modify_ip(STAGE_IP)
 def test_urls_stage_stable(data_element):
     do_urls('stage', data_element)
 
+@pytest.mark.stage
 @pytest.mark.parametrize('data_element', DATA.items(), ids=list((s + '-beta' for s in DATA.keys())))
 @modify_ip(STAGE_IP)
 def test_urls_stage_beta(data_element):
