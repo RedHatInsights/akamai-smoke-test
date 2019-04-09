@@ -1,3 +1,3 @@
 #!/bin/bash
 source venv/bin/activate
-pytest -sv ./test/test.py
+pytest -sv -n auto ./test/test.py
