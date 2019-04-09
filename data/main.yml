@@ -30,10 +30,10 @@ vulnerability:
   - /rhel/vulnerability/systems
 
 compliance:
-  - /compliance/policies
-  - /compliance/policies/fooo
-  - /compliance/systems
-  - /compliance/imagestreams
+  - /rhel/compliance/policies
+  - /rhel/compliance/policies/fooo
+  - /rhel/compliance/systems
+  - /rhel/compliance/imagestreams
 
 drift:
   - /rhel/drift
