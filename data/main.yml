@@ -39,5 +39,26 @@ drift:
   - /rhel/drift
 
 dashboard:
-  - /dashboard
-  - /dashboard/
+  - /rhel/dashboard
+  - /rhel/dashboard/
+
+# cost-management:
+#   - /hybrid/cost-management
+#   - /hybrid/cost-management/
+#   - /hybrid/cost-management/ocp-on-aws
+#   - /hybrid/cost-management/ocp
+#   - /hybrid/cost-management/aws
+#   - /hybrid/cost-management/sources
+
+# catalog:
+#   - /hybrid/catalog
+#   - /hybrid/catalog/portfolios
+#   - /hybrid/catalog/platforms
+#   - /hybrid/catalog/orders
+#   - /hybrid/catalog/approvals
+#   - /hybird/settings/catalog-sources
+#   - /insights/settings/catalog-sources
+
+# openshift:
+#   - /openshift
+#   - /openshift/clusters
