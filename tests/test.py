@@ -10,7 +10,10 @@ from utils import Utils
 from decorators import modify_ip
 
 baseurl = 'https://cloud.redhat.com'
-cookies = { 'x-rh-insights-alpha': 'flipmodesquadisthegreatest' }
+headers = {
+    'Cookie': 'x-rh-insights-alpha=flipmodesquadisthegreatest',
+    'Pragma': 'akamai-x-get-extracted-values'
+}
 
 output_data = {}
 
@@ -22,7 +25,7 @@ def getUrl(path, release='stable'):
 def do_urls(env, data_element, release = 'stable'):
     appname, path = data_element
     url = getUrl(path, release)
-    r = requests.get(url, cookies=cookies)
+    r = requests.get(url, headers=headers)
 
     assert r.status_code == 200, 'Expected status code of GET {} to be 200 got {}'.format(url, r.status_code)
 
@@ -50,12 +53,13 @@ def do_urls(env, data_element, release = 'stable'):
     assert found, 'did not find a valid app js reference in HTML on GET {}\n{}'.format(url, r.text)
 
 
-DATA = Utils.getFlatData(path = pytest.config.getoption('data'))
-
+RAW_DATA = Utils.getData(path = pytest.config.getoption('data'))
+DATA = Utils.getFlatData(RAW_DATA)
 APP = pytest.config.getoption('app')
+
 if APP:
-    assert APP in DATA, 'invalid app... you asked for {}'.format(APP)
-    DATA = { APP: DATA[APP] }
+    assert APP in RAW_DATA, 'invalid app... you asked for {}'.format(APP)
+    DATA = Utils.getFlatData({ APP: RAW_DATA[APP] })
 
 PROD_IP  = '104.112.254.145'
 STAGE_IP = '23.201.3.166'
