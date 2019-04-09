@@ -50,7 +50,13 @@ def do_urls(env, data_element, release = 'stable'):
         # if the HTML did not contain a valid JS src!
         assert found, 'did not find a valid app js reference in HTML on GET {}\n{}'.format(url, r.text)
 
-DATA = Utils.getData()
+
+DATA = Utils.getData(path = pytest.config.getoption('data'))
+APP = pytest.config.getoption('app')
+if APP:
+    assert APP in DATA, 'invalid app... you asked for {}'.format(APP)
+    DATA = { APP: DATA[APP] }
+
 PROD_IP  = '104.112.254.145'
 STAGE_IP = '23.201.3.166'
 UHC_ON_CLOUD_URLS = [ getUrl('/'), getUrl('/clusters/') ]
