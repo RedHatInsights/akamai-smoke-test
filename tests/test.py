@@ -53,8 +53,8 @@ def do_urls(env, data_element, release = 'stable'):
 
     AKA_PM_FWD_URL = Utils.extractNamedInfoHeaderValue(r.headers['X-Akamai-Session-Info'], 'AKA_PM_FWD_URL')
     net_storage_path = Utils.getNetStoragePath(appname, release)
-    # TODO disabled while we hack
-    # assert AKA_PM_FWD_URL == net_storage_path, 'expected AKA_PM_FWD_URL ({}) to match the netstorage path ({}) for the GET {}'.format(AKA_PM_FWD_URL, net_storage_path, url)
+
+    assert AKA_PM_FWD_URL == net_storage_path, 'expected AKA_PM_FWD_URL ({}) to match the netstorage path ({}) for the GET {}'.format(AKA_PM_FWD_URL, net_storage_path, url)
 
     if path not in output_data:
         output_data[path] = DotDict({ 'url': url })
