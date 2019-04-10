@@ -57,12 +57,12 @@ catalog:
   - /hybrid/catalog/orders
 
 sources:
-  - /hybird/settings/sources
+  - /hybrid/settings/sources
   - /insights/settings/sources
 
-approvals:
+approval:
   - /hybrid/catalog/approvals
 
-openshift:
-  - /openshift
-  - /openshift/clusters
+# openshift:
+#   - /openshift
+#   - /openshift/clusters
