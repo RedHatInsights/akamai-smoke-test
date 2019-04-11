@@ -57,8 +57,8 @@ catalog:
   - /hybrid/catalog/orders
 
 sources:
-  - /hybrid/settings/sources
-  - /insights/settings/sources
+  - /hybrid/settings/catalog-sources
+  - /insights/sources
 
 approval:
   - /hybrid/catalog/approvals
