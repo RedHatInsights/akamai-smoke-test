@@ -9,6 +9,9 @@ insights:
   - /insights/rules
   - /insights/rules/
 
+hooks:
+  - /insights/settings/hooks
+
 remediations:
   - /insights/remediations
   - /insights/remediations/
@@ -63,6 +66,6 @@ sources:
 approval:
   - /hybrid/catalog/approval
 
-# openshift:
-#   - /openshift
-#   - /openshift/clusters
+openshift:
+  - /openshift
+  - /openshift/clusters
