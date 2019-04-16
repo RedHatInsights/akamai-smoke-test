@@ -61,7 +61,7 @@ sources:
   - /insights/settings/sources
 
 approval:
-  - /hybrid/catalog/approvals
+  - /hybrid/catalog/approval
 
 # openshift:
 #   - /openshift
