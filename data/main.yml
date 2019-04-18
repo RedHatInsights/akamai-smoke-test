@@ -11,6 +11,7 @@ insights:
 
 hooks:
   - /insights/settings/hooks
+  - /insights/settings/hooks/deadbeef
 
 remediations:
   - /insights/remediations
@@ -69,3 +70,5 @@ approval:
 openshift:
   - /openshift
   - /openshift/clusters
+  - /openshift/fdsf/kfdsjklf/fdsjkfsdl/
+  - /openshift/clusters/f/e/f/sd/g/fgfds

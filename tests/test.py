@@ -16,6 +16,7 @@ headers = {
 
 output_data = {}
 
+
 def do_urls(env, data_element, release = 'stable'):
     appname, path = data_element
     url = Utils.getUrl(path, release)
@@ -113,6 +114,24 @@ def test_urls_stage_stable(data_element):
 @modify_ip(STAGE_IP)
 def test_urls_stage_beta(data_element):
     do_urls('stage', data_element, release = 'beta')
+
+def do_api(path, release = 'stable'):
+    url = Utils.getUrl(path, release)
+    print(url)
+    r = requests.get(url, headers=headers)
+    assert r.status_code == 200
+
+@pytest.mark.stage
+@pytest.mark.parametrize('data_element', ['/api/static/uploader.json'])
+@modify_ip(STAGE_IP)
+def test_api_stage(data_element):
+    do_api(data_element, 'stable')
+
+@pytest.mark.prod
+@pytest.mark.parametrize('data_element', ['/api/static/uploader.json'])
+@modify_ip(PROD_IP)
+def test_api_prod(data_element):
+    do_api(data_element, 'stable')
 
 # cannot use this in parallel without something like
 # https://github.com/pytest-dev/pytest-xdist/issues/385
