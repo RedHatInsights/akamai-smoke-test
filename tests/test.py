@@ -10,12 +10,10 @@ from utils import Utils
 from decorators import modify_ip
 
 headers = {
-    'Cookie': 'x-rh-insights-alpha=flipmodesquadisthegreatest',
     'Pragma': 'akamai-x-get-extracted-values'
 }
 
 output_data = {}
-
 
 def do_urls(env, data_element, release = 'stable'):
     appname, path = data_element
@@ -76,14 +74,6 @@ STAGE_IP = '23.201.3.166'
 UHC_ON_CLOUD_URLS = [ Utils.getUrl('/'), Utils.getUrl('/clusters/') ]
 
 @pytest.mark.prod
-@pytest.mark.parametrize('data_element', UHC_ON_CLOUD_URLS)
-@modify_ip(PROD_IP)
-def test_uhc_unchromed_still_works_prod(data_element):
-    r = requests.get(data_element)
-    assert '<title>OpenShift Unified Hybrid Cloud</title>' in r.text
-    assert ' src="/clusters/bundle.main.js' in r.text
-
-@pytest.mark.prod
 @pytest.mark.parametrize('data_element', DATA, ids=list((d[1] for d in DATA)))
 @modify_ip(PROD_IP)
 def test_urls_prod_stable(data_element):
@@ -94,14 +84,6 @@ def test_urls_prod_stable(data_element):
 @modify_ip(PROD_IP)
 def test_urls_prod_beta(data_element):
     do_urls('prod', data_element, release = 'beta')
-
-@pytest.mark.stage
-@pytest.mark.parametrize('data_element', UHC_ON_CLOUD_URLS)
-@modify_ip(STAGE_IP)
-def test_uhc_unchromed_still_works_stage(data_element):
-    r = requests.get(data_element)
-    assert '<title>OpenShift Unified Hybrid Cloud</title>' in r.text
-    assert ' src="/clusters/bundle.main.js' in r.text
 
 @pytest.mark.stage
 @pytest.mark.parametrize('data_element', DATA, ids=list((d[1] for d in DATA)))
