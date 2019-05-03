@@ -19,10 +19,11 @@ class Utils():
             return baseurl + '/beta' + path
         return baseurl + path
 
-    def getNetStoragePath(appname, release='stable'):
+    def getNetStoragePath(appname, release='stable', expected_status = 200):
+        filename = 'index.html' if expected_status == 200 else '404.html'
         if release == 'beta':
-            return '/822386/beta/apps/{}/index.html'.format(appname)
-        return  '/822386/apps/{}/index.html'.format(appname)
+            return '/822386/beta/apps/{}/{}'.format(appname, filename)
+        return  '/822386/apps/{}/{}'.format(appname, filename)
 
     def extractNamedInfoHeaderValue(string, name):
         name_str = 'name={}'.format(name)
