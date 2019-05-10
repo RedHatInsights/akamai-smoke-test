@@ -3,6 +3,7 @@ import requests
 import hashlib
 import time
 import itertools
+import globals
 
 from dotdict import DotDict
 from lxml import html
@@ -69,9 +70,9 @@ if APP:
     assert APP in RAW_DATA, 'invalid app... you asked for {}'.format(APP)
     DATA = Utils.getFlatData({ APP: RAW_DATA[APP] })
 
-PROD_IP  = '104.112.254.145'
-STAGE_IP = '23.51.1.230'
 UHC_ON_CLOUD_URLS = [ Utils.getUrl('/'), Utils.getUrl('/clusters/') ]
+STAGE_IP = globals.STAGE_IP
+PROD_IP = globals.PROD_IP
 
 @pytest.mark.prod
 @pytest.mark.parametrize('data_element', DATA, ids=list((d[1] for d in DATA)))
@@ -99,7 +100,6 @@ def test_urls_stage_beta(data_element):
 
 def do_api(path, release = 'stable', expected_status = 200):
     url = Utils.getUrl(path, release)
-    print(url)
     r = requests.get(url, headers=headers)
     assert r.status_code == expected_status
 
