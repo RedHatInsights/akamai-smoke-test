@@ -15,12 +15,12 @@ headers = {
 
 output_data = {}
 
-def do_urls(env, data_element, release = 'stable'):
+def do_urls(env, data_element, release = 'stable', expected_status = 200):
     appname, path = data_element
     url = Utils.getUrl(path, release)
     r = requests.get(url, headers=headers)
 
-    assert r.status_code == 200, 'Expected status code of GET {} to be 200 got {}'.format(url, r.status_code)
+    assert r.status_code == expected_status, 'Expected status code of GET {} to be {} but got {}'.format(url, expected_status, r.status_code)
 
     found = False
     tree = html.fromstring(r.content)
@@ -51,7 +51,7 @@ def do_urls(env, data_element, release = 'stable'):
     assert 'X-Akamai-Session-Info' in r.headers
 
     AKA_PM_FWD_URL = Utils.extractNamedInfoHeaderValue(r.headers['X-Akamai-Session-Info'], 'AKA_PM_FWD_URL')
-    net_storage_path = Utils.getNetStoragePath(appname, release)
+    net_storage_path = Utils.getNetStoragePath(appname, release, expected_status)
 
     assert AKA_PM_FWD_URL == net_storage_path, 'expected AKA_PM_FWD_URL ({}) to match the netstorage path ({}) for the GET {}'.format(AKA_PM_FWD_URL, net_storage_path, url)
 
@@ -97,11 +97,11 @@ def test_urls_stage_stable(data_element):
 def test_urls_stage_beta(data_element):
     do_urls('stage', data_element, release = 'beta')
 
-def do_api(path, release = 'stable'):
+def do_api(path, release = 'stable', expected_status = 200):
     url = Utils.getUrl(path, release)
     print(url)
     r = requests.get(url, headers=headers)
-    assert r.status_code == 200
+    assert r.status_code == expected_status
 
 @pytest.mark.stage
 @pytest.mark.parametrize('data_element', ['/api/static/uploader.json'])
@@ -121,3 +121,27 @@ def test_api_prod(data_element):
 def test_hashes():
     for key, val in output_data.items():
         assert val.prod_hash == val.stage_hash, "md5sum mismatch for page at {}".format(val.url)
+
+@pytest.mark.stage
+@pytest.mark.parametrize('data_element', ['/api/zomgnotfound'])
+@modify_ip(STAGE_IP)
+def test_400_api_stage(data_element):
+    do_api(data_element, 'stable', 404)
+
+@pytest.mark.prod
+@pytest.mark.parametrize('data_element', ['/api/zomgnotfound'])
+@modify_ip(PROD_IP)
+def test_400_api_prod(data_element):
+    do_api(data_element, 'stable', 404)
+
+@pytest.mark.stage
+@pytest.mark.parametrize('data_element', [('landing', '/zomgnotfound')])
+@modify_ip(STAGE_IP)
+def test_400_url_stage(data_element):
+    do_urls('stage', data_element, 'stable', 404)
+
+@pytest.mark.prod
+@pytest.mark.parametrize('data_element', [('landing', '/zomgnotfound')])
+@modify_ip(PROD_IP)
+def test_400_url_prod(data_element):
+    do_urls('prod', data_element, 'stable', 404)
