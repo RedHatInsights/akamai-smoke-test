@@ -70,7 +70,7 @@ if APP:
     DATA = Utils.getFlatData({ APP: RAW_DATA[APP] })
 
 PROD_IP  = '104.112.254.145'
-STAGE_IP = '23.201.3.166'
+STAGE_IP = '23.51.1.230'
 UHC_ON_CLOUD_URLS = [ Utils.getUrl('/'), Utils.getUrl('/clusters/') ]
 
 @pytest.mark.prod
