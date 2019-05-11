@@ -19,7 +19,7 @@ output_data = {}
 def do_urls(env, data_element, release = 'stable', expected_status = 200):
     appname, path = data_element
     url = Utils.getUrl(path, release)
-    r = requests.get(url, headers=headers)
+    r = requests.get(url, headers=headers, timeout=6)
 
     assert r.status_code == expected_status, 'Expected status code of GET {} to be {} but got {}'.format(url, expected_status, r.status_code)
 
