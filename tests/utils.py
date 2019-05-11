@@ -1,3 +1,4 @@
+import dns.resolver
 import yaml
 
 baseurl = 'https://cloud.redhat.com'
@@ -6,6 +7,22 @@ class Utils():
     def getData(path = './data/main.yml'):
         with open(path, 'r') as f:
             return yaml.safe_load(f)
+
+    def getStageIp():
+        cname = 'cloud.redhat.com'
+        for i in range(0,10):
+            try:
+                answers = dns.resolver.query(cname, 'CNAME')
+                cname = str(answers[0])
+            except:
+                break
+            if i == 10:
+                raise Exception('Too many loops looking for last cname')
+        cname = cname.replace('.net', '-staging.net')
+        return str(dns.resolver.query(cname)[0])
+
+    def getProdIp():
+        return str(dns.resolver.query('cloud.redhat.com')[0])
 
     def getFlatData(data):
         ret = []

@@ -3,7 +3,6 @@ import requests
 import hashlib
 import time
 import itertools
-import globals
 
 from dotdict import DotDict
 from lxml import html
@@ -71,8 +70,9 @@ if APP:
     DATA = Utils.getFlatData({ APP: RAW_DATA[APP] })
 
 UHC_ON_CLOUD_URLS = [ Utils.getUrl('/'), Utils.getUrl('/clusters/') ]
-STAGE_IP = globals.STAGE_IP
-PROD_IP = globals.PROD_IP
+
+STAGE_IP = '184.31.98.175'
+PROD_IP  = Utils.getProdIp()
 
 @pytest.mark.prod
 @pytest.mark.parametrize('data_element', DATA, ids=list((d[1] for d in DATA)))
