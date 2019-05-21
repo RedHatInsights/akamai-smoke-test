@@ -41,6 +41,8 @@ compliance:
 
 drift:
   - /rhel/drift
+  - /rhel/drift/
+  - /rhel/drift/79c2a51a-72c8-4207-a53b-5f3e97225744/?system_ids=79c2a51a-72c8-4207-a53b-5f3e97225744&system_ids=b5546cfc-6593-469a-92d3-6b1467ada0b9
 
 dashboard:
   - /rhel/dashboard
@@ -53,6 +55,7 @@ cost-management:
   - /hybrid/cost-management/ocp
   - /hybrid/cost-management/aws
   - /hybrid/cost-management/sources
+  - /hybrid/cost-management/ocp-on-aws?group_by[project]=*&order_by[cost]=desc
 
 catalog:
   - /hybrid/catalog
@@ -64,8 +67,14 @@ sources:
   - /hybrid/settings/sources
   - /insights/settings/sources
 
+rbac:
+  - /hybrid/settings/rbac
+  - /hybrid/settings/rbac/
+  - /hybrid/settings/rbac/groups/edit/6ade3b16-3385-4bda-ae37-4ce3e41a0547
+
 approval:
   - /hybrid/catalog/approval
+  - /hybrid/catalog/approval/workflows/add-workflow
 
 openshift:
   - /openshift
