@@ -6,6 +6,7 @@ from dotdict import DotDict
 from lxml import html
 
 from utils import extractNamedInfoHeaderValue
+from utils import getMainData
 from utils import getData
 from utils import getFlatData
 from utils import getNetStoragePath
@@ -80,14 +81,14 @@ def do_urls(env, data_element, release, expected_status=200):
 
     # if the HTML did not contain a valid JS src!
 
-
-RAW_DATA = getData(path=pytest.config.getoption("data"))
-DATA = getFlatData(RAW_DATA)
+MAIN_DATA = getMainData()
+SUPPLEMENTAL_DATA = getData(path=pytest.config.getoption("data"))
+DATA = getFlatData(MAIN_DATA, SUPPLEMENTAL_DATA)
 APP = pytest.config.getoption("app")
 
 if APP:
-    assert APP in RAW_DATA, "invalid app... you asked for {}".format(APP)
-    DATA = getFlatData({APP: RAW_DATA[APP]})
+    assert APP in SUPPLEMENTAL_DATA, "invalid app... you asked for {}".format(APP)
+    DATA = getFlatData({APP: SUPPLEMENTAL_DATA[APP]})
 
 UHC_ON_CLOUD_URLS = [getUrl("/"), getUrl("/clusters/")]
 

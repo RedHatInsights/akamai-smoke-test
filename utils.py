@@ -1,11 +1,13 @@
 import dns.resolver
 import yaml
+import urllib3
 from urllib3.util import connection
 
 baseurl = "https://cloud.redhat.com"
 
 
 _orig_create_connection = connection.create_connection
+http = urllib3.PoolManager()
 
 
 class ip_context(object):
@@ -22,11 +24,13 @@ class ip_context(object):
     def __exit__(self, a, b, c):
         connection.create_connection = _orig_create_connection
 
-
-def getData(path="./data/main.yml"):
+def getData(path="./data/additions.yml"):
     with open(path, "r") as f:
         return yaml.safe_load(f)
 
+def getMainData(path=""):
+    r = http.request('GET', 'https://raw.githubusercontent.com/RedHatInsights/cloud-services-config/master/main.yml')
+    return yaml.safe_load(r.data.decode('utf-8'))
 
 def getStageIp():
     cname = "cloud.redhat.com"
@@ -47,11 +51,20 @@ def getProdIP():
     return str(dns.resolver.query("cloud.redhat.com")[0])
 
 
-def getFlatData(data):
+def getFlatData(main_data, supplemental_data):
     ret = []
-    for key in data:
-        for val in data[key]:
-            ret.append((key, val))
+    # For every app that has frontend paths
+    for key in (x for x in main_data if ("frontend_paths" in main_data[x])):
+        # For every frontend path listed in the main data
+        for fe_path in main_data[key]["frontend_paths"]:
+            # Add the basic path, with and without the trailing slash
+            ret.append((key, fe_path))
+            ret.append((key, fe_path + "/"))
+            # If defined in supplemental file...
+            # For every defined supplemental path, append to the end of the basic frontend paths
+            if key in supplemental_data:
+                for val in supplemental_data[key]:
+                    ret.append((key, fe_path + val))
     return ret
 
 
