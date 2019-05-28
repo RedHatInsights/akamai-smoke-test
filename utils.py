@@ -24,7 +24,7 @@ class ip_context(object):
     def __exit__(self, a, b, c):
         connection.create_connection = _orig_create_connection
 
-def getData(path="./data/additions.yml"):
+def getAdditionalData(path="./data/additions.yml"):
     with open(path, "r") as f:
         return yaml.safe_load(f)
 
