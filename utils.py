@@ -24,7 +24,7 @@ class ip_context(object):
     def __exit__(self, a, b, c):
         connection.create_connection = _orig_create_connection
 
-def getAdditionalData(path="./data/additions.yml"):
+def getAdditionalData(path="./data/supplemental.yml"):
     with open(path, "r") as f:
         return yaml.safe_load(f)
 
@@ -57,14 +57,21 @@ def getFlatData(main_data, supplemental_data):
     for key in (x for x in main_data if ("frontend_paths" in main_data[x])):
         # For every frontend path listed in the main data
         for fe_path in main_data[key]["frontend_paths"]:
-            # Add the basic path, with and without the trailing slash
-            ret.append((key, fe_path))
-            ret.append((key, fe_path + "/"))
+            skip_test = False
             # If defined in supplemental file...
             # For every defined supplemental path, append to the end of the basic frontend paths
             if key in supplemental_data:
-                for val in supplemental_data[key]:
-                    ret.append((key, fe_path + val))
+                if 'skip' in supplemental_data[key] and supplemental_data[key]['skip']:
+                    skip_test = True
+                elif 'additions' in supplemental_data[key]:
+                    for val in supplemental_data[key]['additions']:
+                        ret.append((key, fe_path + val))
+
+            # Add the basic path, with and without the trailing slash
+            if skip_test == False:
+                ret.append((key, fe_path))
+                ret.append((key, fe_path + "/"))
+            
     return ret
 
 
