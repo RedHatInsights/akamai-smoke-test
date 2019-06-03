@@ -54,9 +54,10 @@ def getProdIP():
 def getFlatData(main_data, supplemental_data):
     ret = []
     # For every app that has frontend paths
-    for key in (x for x in main_data if ("frontend_paths" in main_data[x])):
+    for app in (x for x in main_data if ("frontend_paths" in x)):
+        key = app["id"]
         # For every frontend path listed in the main data
-        for fe_path in main_data[key]["frontend_paths"]:
+        for fe_path in app["frontend_paths"]:
             skip_test = False
             # If defined in supplemental file...
             # For every defined supplemental path, append to the end of the basic frontend paths
