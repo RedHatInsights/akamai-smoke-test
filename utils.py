@@ -29,7 +29,7 @@ def getAdditionalData(path="./data/supplemental.yml"):
         return yaml.safe_load(f)
 
 def getMainData(path=""):
-    r = http.request('GET', 'https://raw.githubusercontent.com/RedHatInsights/cloud-services-config/master/main.yml')
+    r = http.request('GET', 'https://cloud.redhat.com/config/main.yml')
     return yaml.safe_load(r.data.decode('utf-8'))
 
 def getStageIp():
