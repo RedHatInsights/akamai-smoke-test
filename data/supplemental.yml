@@ -1,26 +1,15 @@
-insights:
+api-docs:
+  skip: true
+
+approval:
   additions:
-    - /actions
-    - /actions/
-    - /rules
-    - /rules/
+    - /workflows/add-workflow
 
-hooks:
-    additions:
-      - /deadbeef
-
-remediations:
-    additions:
-      - /32e6f471-e554-4c0b-8675-88381a02c7b2
-
-inventory:
-    additions:
-      - /7d5b12fd-a45f-48c6-8921-5da2423b6be8/vulnerabilities
-
-vulnerability:
-    additions:
-      - /cves
-      - /systems
+catalog:
+  additions:
+    - /portfolios
+    - /platforms
+    - /orders
 
 compliance:
   additions:
@@ -28,10 +17,6 @@ compliance:
     - /policies/fooo
     - /systems
     - /imagestreams
-
-drift:
-  additions:
-    - /79c2a51a-72c8-4207-a53b-5f3e97225744/?system_ids=79c2a51a-72c8-4207-a53b-5f3e97225744&system_ids=b5546cfc-6593-469a-92d3-6b1467ada0b9
 
 cost-management:
   additions:
@@ -41,19 +26,23 @@ cost-management:
     - /sources
     - /ocp-on-aws?group_by[project]=*&order_by[cost]=desc
 
-catalog:
+drift:
   additions:
-    - /portfolios
-    - /platforms
-    - /orders
+    - /79c2a51a-72c8-4207-a53b-5f3e97225744/?system_ids=79c2a51a-72c8-4207-a53b-5f3e97225744&system_ids=b5546cfc-6593-469a-92d3-6b1467ada0b9
 
-rbac:
-  additions:
-    - /groups/edit/6ade3b16-3385-4bda-ae37-4ce3e41a0547
+hooks:
+  skip: true
 
-approval:
+insights:
   additions:
-    - /workflows/add-workflow
+    - /actions
+    - /actions/
+    - /rules
+    - /rules/
+
+inventory:
+    additions:
+      - /7d5b12fd-a45f-48c6-8921-5da2423b6be8/vulnerabilities
 
 openshift:
   additions:
@@ -61,5 +50,21 @@ openshift:
     - /fdsf/kfdsjklf/fdsjkfsdl/
     - /clusters/f/e/f/sd/g/fgfds
 
+rbac:
+  additions:
+    - /groups/edit/6ade3b16-3385-4bda-ae37-4ce3e41a0547
+
+remediations:
+    additions:
+      - /32e6f471-e554-4c0b-8675-88381a02c7b2
+
+ruledev:
+  skip: true
+
 storybook:
   skip: true
+
+vulnerability:
+    additions:
+      - /cves
+      - /systems

@@ -1,3 +1,3 @@
 #!/bin/bash
 source venv/bin/activate
-pytest -s -n auto -k 'prod and not hashes' --release=all
+pytest --capture=sys -n auto -k 'prod and not hashes' --release=all

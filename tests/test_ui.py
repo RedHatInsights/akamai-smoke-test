@@ -100,21 +100,21 @@ def test_urls(appname, path, releaselist, env, release):
         do_urls(env, appname, path, release=release)
 
 
-@pytest.mark.parametrize("data_element", [("landing", "/zomgnotfound")])
+# ("appname", [("landing", "/zomgnotfound")])
 @pytest.mark.parametrize("env", ["stage", "prod"])
-def test_400_url(env, data_element):
-    do_urls(env, data_element, "stable", 404)
+def test_400_url(env):
+    do_urls(env, "landing", "/zomgnotfound", "stable", 404)
 
 
 # cannot use this in parallel without something like
 # https://github.com/pytest-dev/pytest-xdist/issues/385
-@pytest.mark.parametrize("data_element", DATA, ids=list(d[1] for d in DATA))
-def test_hashes_prod_and_stage(data_element):
+@pytest.mark.parametrize("appname,path,releaselist", DATA)
+def test_hashes_prod_and_stage(appname, path, releaselist):
     for env in ['prod', 'stage']:
         hash = []
         with ip_context(IPS[env]):
-            appname, path, release = data_element
-            url = getUrl(path, 'stable')
-            r = sessions[env].get(url, headers=headers, timeout=6)
-            hash.append(hashlib.md5(r.text.encode("utf-8")).hexdigest())
+            for release in releaselist:
+                url = getUrl(path, 'stable')
+                r = sessions[env].get(url, headers=headers, timeout=6)
+                hash.append(hashlib.md5(r.text.encode("utf-8")).hexdigest())
     assert all(hash[0] == h_obj for h_obj in hash)

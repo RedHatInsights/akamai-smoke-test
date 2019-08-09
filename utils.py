@@ -32,16 +32,16 @@ def getMainData(release="stable"):
     apps = {}
     if release in ["stable", "all"]:
         apps = yaml.safe_load(http.request('GET', 'https://cloud.redhat.com/config/main.yml').data.decode('utf-8'))
-        for app_key in apps.keys():
+        for app_key in (x for x in apps.keys() if not hasattr(apps[x], "disabled_on_prod")):
             apps[app_key].update({"releases": ["stable"]})
     if release in ["beta", "all"]:
         beta_apps = yaml.safe_load(http.request('GET', 'https://cloud.redhat.com/beta/config/main.yml').data.decode('utf-8'))
-        for app_key in beta_apps.keys():
+        for app_key in (x for x in beta_apps.keys() if not hasattr(beta_apps[x], "disabled_on_prod")):
             if app_key in apps:
-                apps[app_key]["releases"].append("beta")
+                apps[app_key]["releases"].append("test")
             else:
                 apps[app_key] = beta_apps[app_key]
-                apps[app_key].update({"releases": ["beta"]})
+                apps[app_key].update({"releases": ["test"]})
     return apps
 
 def getStageIp():
@@ -82,8 +82,9 @@ def getFlatData(main_data, supplemental_data):
 
             # Add the basic path, with and without the trailing slash
             if skip_test == False:
-                ret.append((key, fe_path, ["stable", "beta"]))
-                ret.append((key, fe_path + "/", ["stable", "beta"]))
+                for release in main_data[key]["releases"]:
+                    ret.append((key, fe_path, release))
+                    ret.append((key, fe_path + "/", release))
     return ret
 
 
