@@ -20,8 +20,7 @@ sessions = {}
 sessions['stage'] = requests.Session()
 sessions['prod'] = requests.Session()
 
-def do_urls(env, data_element, release, expected_status=200):
-    appname, path = data_element
+def do_urls(env, appname, path, release, expected_status=200):
     url = getUrl(path, release)
     with ip_context(IPS[env]):
         r = requests.get(url, headers=headers, timeout=6)
@@ -81,7 +80,7 @@ def do_urls(env, data_element, release, expected_status=200):
 
     # if the HTML did not contain a valid JS src!
 
-MAIN_DATA = getMainData()
+MAIN_DATA = getMainData(release=pytest.config.getoption("release"))
 SUPPLEMENTAL_DATA = getAdditionalData(path=pytest.config.getoption("data"))
 DATA = getFlatData(MAIN_DATA, SUPPLEMENTAL_DATA)
 APP = pytest.config.getoption("app")
@@ -93,11 +92,12 @@ if APP:
 UHC_ON_CLOUD_URLS = [getUrl("/"), getUrl("/clusters/")]
 
 
-@pytest.mark.parametrize("data_element", DATA, ids=list((d[1] for d in DATA)))
+@pytest.mark.parametrize("appname,path,releaselist", DATA)
 @pytest.mark.parametrize("env", ["stage", "prod"])
 @pytest.mark.parametrize("release", ["stable", "beta"])
-def test_urls(env, release, data_element):
-    do_urls(env, data_element, release=release)
+def test_urls(appname, path, releaselist, env, release):
+    if release in releaselist:
+        do_urls(env, appname, path, release=release)
 
 
 @pytest.mark.parametrize("data_element", [("landing", "/zomgnotfound")])
@@ -108,12 +108,12 @@ def test_400_url(env, data_element):
 
 # cannot use this in parallel without something like
 # https://github.com/pytest-dev/pytest-xdist/issues/385
-@pytest.mark.parametrize("data_element", DATA, ids=list((d[1] for d in DATA)))
+@pytest.mark.parametrize("data_element", DATA, ids=list(d[1] for d in DATA))
 def test_hashes_prod_and_stage(data_element):
     for env in ['prod', 'stage']:
         hash = []
         with ip_context(IPS[env]):
-            appname, path = data_element
+            appname, path, release = data_element
             url = getUrl(path, 'stable')
             r = sessions[env].get(url, headers=headers, timeout=6)
             hash.append(hashlib.md5(r.text.encode("utf-8")).hexdigest())
