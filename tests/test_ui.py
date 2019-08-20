@@ -45,10 +45,11 @@ def do_urls(env, appname, path, release, expected_status=200):
     else:
         # catches apps that are not the starter app
         if release == "beta":
-            assert '<script type="text/javascript" src="/beta/apps/{}'.format(appname) in r.text
+            if '<script type="text/javascript" src="/beta/apps/{}'.format(appname) in r.text or '<script src="/beta/apps/{}'.format(appname) in r.text:
+                found = True
         else:
-            assert '<script type="text/javascript" src="/apps/{}'.format(appname) in r.text
-        found = True
+            if '<script type="text/javascript" src="/apps/{}'.format(appname) in r.text or '<script src="/apps/{}'.format(appname) in r.text:
+                found = True
 
     assert found, "did not find a valid app js reference in HTML on GET {}\n{}".format(url, r.text)
 
