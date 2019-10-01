@@ -14,7 +14,7 @@ def do_api(env, path, release="stable", expected_status=200):
     assert r.status_code == expected_status
 
 
-@pytest.mark.parametrize("data_element", ["/api/static/uploader.json"])
+@pytest.mark.parametrize("data_element", ["/api/v1/static/uploader.json"])
 @pytest.mark.parametrize("env", ["stage", "prod"])
 def test_api_prod(env, data_element):
     do_api(env, data_element, "stable")
