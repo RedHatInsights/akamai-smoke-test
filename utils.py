@@ -66,7 +66,7 @@ def getProdIP():
 def getFlatData(main_data, supplemental_data):
     ret = []
     # For every app that has frontend paths
-    for key in (x for x in main_data.keys() if ("frontend" in main_data[x] and "paths" in main_data[x]["frontend"])):
+    for key in (x for x in main_data.keys() if ("frontend" in main_data[x] and "paths" in main_data[x]["frontend"]) and not "app_base" in main_data[x]["frontend"]):
         app = main_data[key]
         # For every frontend path listed in the main data
         for fe_path in app["frontend"]["paths"]:
