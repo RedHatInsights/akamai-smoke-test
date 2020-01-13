@@ -30,9 +30,6 @@ drift:
   additions:
     - /79c2a51a-72c8-4207-a53b-5f3e97225744/?system_ids=79c2a51a-72c8-4207-a53b-5f3e97225744&system_ids=b5546cfc-6593-469a-92d3-6b1467ada0b9
 
-hooks:
-  skip: true
-
 insights:
   additions:
     - /actions
