@@ -7,7 +7,7 @@ dnspython==1.16.0
 execnet==1.6.0
 flexible-dotdict==0.2.1
 idna==2.8
-lxml==4.3.3
+lxml==4.6.2
 more-itertools==7.0.0
 packaging==19.0
 pluggy==0.9.0
